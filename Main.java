@@ -1,4 +1,3 @@
-import java.util.Scanner;
 
 
 // /JDBCProject
@@ -12,6 +11,7 @@ import java.util.Scanner;
 // └── DBconnector.java
 
 
+import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -33,15 +33,15 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("operation: UPDATING");
-                    UpdateHandler.handle(sc);
+                    // UpdateHandler.handle(sc);
                     break;
                 case "3":
                     System.out.println("operation: DELETING");
-                    DeleteHandler.handle(sc);
+                    // DeleteHandler.handle(sc);
                     break;
                 case "4":
                     System.out.println("operation: DISPLAYING");
-                    DisplayHandler.handle(sc);
+                    // DisplayHandler.handle(sc);
                     break;
                 case "0":
                     System.out.println("Exiting the program. Goodbye!");
