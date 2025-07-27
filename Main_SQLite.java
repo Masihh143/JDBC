@@ -25,7 +25,7 @@ public class Main_SQLite {
                     System.out.println("operation: ADDING");
                     InsertHandler.handle(sc);
                     break;
-                case "5":
+                case "2":
                     System.out.println("operation: FREQUENT QUERY");
                     FQ.handle(sc);
                     break;
