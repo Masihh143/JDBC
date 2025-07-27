@@ -101,13 +101,3 @@ chmod +x start.sh
 | `start.sh`                | Bash script to compile all `.java` files and run the application with JDBC driver.                       |
 
 ---
-
-## 📌 Note on JDBC `.jar` File
-
-The program depends on the `sqlite-jdbc-3.50.3.0.jar` file.
-
-### Do I need to download it?
-
-Yes — place the `.jar` file in the **same directory** as the source code.
-
-> If you'd prefer a single `.jar` that includes all classes and the driver, we can bundle it for you as a fat jar. Ask if interested!
