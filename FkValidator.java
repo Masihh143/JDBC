@@ -37,7 +37,7 @@ public class FkValidator {
 
     // ✅ Method to check if a project with given ID exists
     public static boolean projectExists(int projectId) {
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "SELECT 1 FROM project WHERE p_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, projectId);
@@ -50,7 +50,7 @@ public class FkValidator {
     }
 
     public static boolean employeeExists(int empId) {
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String query = "SELECT 1 FROM employee WHERE emp_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, empId);
@@ -63,7 +63,7 @@ public class FkValidator {
     }
 
     public static boolean taskExists(int taskId) {
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String query = "SELECT 1 FROM task WHERE task_id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, taskId);
@@ -76,7 +76,7 @@ public class FkValidator {
     }
 
     public static boolean validDateAssign(int projectId, LocalDate taskStartTime) throws SQLException {
-        try (Connection conn = DBconnector.getConnection()){
+        try (Connection conn = DBconnector_SQLite.getConnection()){
             String sql = "SELECT start_date FROM project WHERE p_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, projectId);
@@ -118,7 +118,7 @@ public class FkValidator {
      public static Map<Integer, List<Integer>> buildGraphFromDB() {            // circular dependency
         Map<Integer, List<Integer>> graph = new HashMap<>();
 
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "SELECT task_id, d_task_id FROM task_dependency";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();

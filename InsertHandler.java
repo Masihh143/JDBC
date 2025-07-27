@@ -22,7 +22,7 @@ public class InsertHandler {
             System.out.println("6. Comment");
             System.out.println("0. Back to Main Menu");
             String choice = sc.nextLine().trim();
-            System.out.println("-------------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------");
 
 
             if (choice.equals("exit")) {
@@ -108,7 +108,7 @@ public class InsertHandler {
         String designation = InputHelper.getEmployeeDesig(sc);
         if (designation == null) return;
 
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             if (conn == null) {
                 System.out.println("❌ Could not connect to database.");
                 return;
@@ -159,7 +159,7 @@ public class InsertHandler {
         if (status == null) return;
 
         // Insert into DB
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             if (conn == null) {
                 System.out.println("❌ Could not connect to database.");
                 return;
@@ -239,7 +239,7 @@ public class InsertHandler {
         }
 
     
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "INSERT INTO task (p_id, task_title, task_descrip, due_date ,status ,start_time) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, p_id);
@@ -296,7 +296,7 @@ public class InsertHandler {
         String role = InputHelper.getNonEmptyString(sc, "Employees role in task: ");
         if (role == null) return;
     
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "INSERT INTO task_employee (emp_id, task_id, role) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, employeeId);
@@ -353,7 +353,7 @@ public class InsertHandler {
         String body = InputHelper.getNonEmptyString(sc , "body: ");
         if (body == null) return;
     
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "INSERT INTO comment (task_id, emp_id, body, created_at) VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, taskId);
@@ -418,7 +418,7 @@ public class InsertHandler {
     
 
     
-        try (Connection conn = DBconnector.getConnection()) {
+        try (Connection conn = DBconnector_SQLite.getConnection()) {
             String sql = "INSERT INTO task_dependency (task_id, d_task_id) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, taskId);

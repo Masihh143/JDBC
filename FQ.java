@@ -95,7 +95,7 @@ public class FQ {
         if (!projValid) return;
 
         String sql = "SELECT task_id, task_title, status FROM task WHERE p_id = ?";
-        try (Connection conn = DBconnector.getConnection();
+        try (Connection conn = DBconnector_SQLite.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, p_id);
@@ -145,7 +145,7 @@ public class FQ {
                 WHERE te.emp_id = ? AND t.status = 'Overdue'
                 """;
 
-        try (Connection conn = DBconnector.getConnection();
+        try (Connection conn = DBconnector_SQLite.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, emp_id);
@@ -185,7 +185,7 @@ public class FQ {
                 )
                 """;
 
-        try (Connection conn = DBconnector.getConnection();
+        try (Connection conn = DBconnector_SQLite.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
 
@@ -232,7 +232,7 @@ public class FQ {
                 ORDER BY c.created_at ASC
                 """;
 
-        try (Connection conn = DBconnector.getConnection();
+        try (Connection conn = DBconnector_SQLite.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, task_id);
@@ -282,7 +282,7 @@ public class FQ {
                 WHERE p_id = ?
                 """;
 
-        try (Connection conn = DBconnector.getConnection();
+        try (Connection conn = DBconnector_SQLite.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, p_id);
