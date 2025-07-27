@@ -26,6 +26,11 @@ public class Main {
             String choice = sc.nextLine().trim();
             System.out.println("-------------------------------------------------------------------------------");
 
+            if (choice.equals("0") || choice.equals("exit")) {
+                System.out.println("👋 Exiting the program. Goodbye!");
+                break;
+            }
+
             switch (choice) {
                 case "1":
                     System.out.println("operation: ADDING");
@@ -43,13 +48,10 @@ public class Main {
                     System.out.println("operation: DISPLAYING");
                     // DisplayHandler.handle(sc);
                     break;
-                case "0":
-                    System.out.println("Exiting the program. Goodbye!");
-                    sc.close();
-                    return;
                 default:
                     System.out.println("❌ Invalid option. Please select between 1-5.");
             }
         }
+        // sc.close();
     }
 }

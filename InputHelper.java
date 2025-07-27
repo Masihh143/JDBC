@@ -14,7 +14,7 @@ public class InputHelper {
             String input = sc.nextLine().trim();
 
             if (input.equalsIgnoreCase("cancel")) {
-                return -1; // special value meaning cancel
+                return -1;
             }
             if (input.equalsIgnoreCase("exit")) exitProgram();
 
@@ -205,12 +205,15 @@ public class InputHelper {
     // 9. Enum validation: Task status
     public static String getTaskStatus(Scanner sc) {
         Map<String , String> validTask = Map.of(
-            "PENDING" , "Pending",
+            "NOT ASSIGNED" , "Not Assigned",
+            "BLOCKED" , "Blocked",
+            "NOT STARTED" , "Not Started",
             "IN PROGRESS" , "In Progress",
-            "COMPLETED" , "Completed"
+            "COMPLETED" , "Completed",
+            "OVERDUE" , "Overdue"
         );
         while (true) {
-            System.out.print("Enter task status (Pending / In Progress / Completed): ");
+            System.out.print("Enter task status (Not Assigned / Blocked / Not Started / In Progress / Completed / Overdue): ");
             String input = sc.nextLine().trim().toUpperCase();
 
             if (input.equalsIgnoreCase("cancel")) return null;
@@ -225,8 +228,9 @@ public class InputHelper {
         }
     }
 
+    // function to exit the program
     private static void exitProgram() {
         System.out.println("👋 Exiting program...");
         System.exit(0);
     }
-}
+} 

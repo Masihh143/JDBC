@@ -2,9 +2,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class InsertHandler {
+
+    static boolean flag = false;
 
     public static void handle(Scanner sc) {
         while (true) {
@@ -20,27 +25,64 @@ public class InsertHandler {
             System.out.println("-------------------------------------------------------------------------------");
 
 
+            if (choice.equals("exit")) {
+                System.out.println("👋 Exiting the program. Goodbye!");
+                System.exit(0);
+                sc.close();
+            }
+
+
             switch (choice) {
                 case "1":
                     insertEmployee(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "2":
                     insertProject(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "3":
                     insertTask(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "4":
                     insertAssignment(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "5":
                     insertDependency(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "6":
                     insertComment(sc);
-                    break;
+                    if (flag == true){
+                        return;
+                    } else {
+                        break;
+                    }
+
                 case "0":
-                    return; // go back to main menu
+                    return; // go back to Main Menu
                 default:
                     System.out.println("❌ Invalid option. Please select from 1-6 or 0.");
             }
@@ -81,6 +123,7 @@ public class InsertHandler {
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
+                flag = true;
                 System.out.println("✅ Employee inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
@@ -107,13 +150,10 @@ public class InsertHandler {
         LocalDate startDate = InputHelper.getValidatedDate(sc, "Enter start date (yyyy-mm-dd): ");
         if (startDate == null) return;
 
-        LocalDate archive_at = InputHelper.getValidatedDate(sc, "Enter archive date (yyyy-mm-dd) or null: ");
-        if (archive_at == null) return;
-
-        if (archive_at.isBefore(startDate)) {
-            System.out.println("❌ End date cannot be before start date. Insert operation cancelled.");
-            return;
-        }
+        // if (archive_at.isBefore(startDate)) {
+        //     System.out.println("❌ End date cannot be before start date. Insert operation cancelled.");               add this line in update function
+        //     return;
+        // } 
 
         String status = InputHelper.getProjectStatus(sc);
         if (status == null) return;
@@ -125,13 +165,12 @@ public class InsertHandler {
                 return;
             }
 
-            String sql = "INSERT INTO project (p_name, p_descrip, start_date, archive_at, status) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO project (p_name, p_descrip, start_date, status) VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setString(2, description);
             stmt.setDate(3, java.sql.Date.valueOf(startDate));
-            stmt.setDate(4, java.sql.Date.valueOf(archive_at));
-            stmt.setString(5, status);
+            stmt.setString(4, status);
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -177,31 +216,42 @@ public class InsertHandler {
     
         LocalDate dueDate = InputHelper.getValidatedDate(sc, "due date (yyyy-mm-dd): ");
         if (dueDate == null) return;
-    
-        LocalDate archive_at = InputHelper.getValidatedDate(sc, "Enter archive date (yyyy-mm-dd) or null: ");
-        if (archive_at == null) return;
 
         String status = InputHelper.getTaskStatus(sc);
-        if (status == null) return;
+        if (status == null) return;   
 
         LocalDate start_time = InputHelper.getValidatedDate(sc, "Enter start date (yyyy-mm-dd): ");
         if (start_time == null) return;
+
+        try {
+            if (!FkValidator.validDateAssign(p_id, start_time)) {
+                System.out.println("Invalid task start time. Aborting insert.");
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error validating task start time: " + e.getMessage());
+            return;
+        }
+
+        if (dueDate.isBefore(start_time)){
+            status = "Overdue";
+        }
+
     
         try (Connection conn = DBconnector.getConnection()) {
-            String sql = "INSERT INTO tasks (p_id, task_title, task_descrip, due_date, archive_at ,status ,start_time) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO task (p_id, task_title, task_descrip, due_date ,status ,start_time) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, p_id);
             stmt.setString(2, title);
             stmt.setString(3, description);
             stmt.setDate(4, java.sql.Date.valueOf(dueDate));
-            stmt.setDate(5, java.sql.Date.valueOf(archive_at));
-            stmt.setString(6, status);
-            stmt.setDate(7, java.sql.Date.valueOf(start_time));
+            stmt.setString(5, status);
+            stmt.setDate(6, java.sql.Date.valueOf(start_time));
 
             
             int rows = stmt.executeUpdate();
             if (rows > 0) {
-                System.out.println("✅ Project inserted successfully.");
+                System.out.println("✅ Task inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
             }
@@ -240,16 +290,24 @@ public class InsertHandler {
             () -> insertAssignment(sc)
         );
         if (!taskValid) return;
+
+        String role = InputHelper.getNonEmptyString(sc, "Employees role in task: ");
+        if (role == null) return;
     
         try (Connection conn = DBconnector.getConnection()) {
-            String sql = "INSERT INTO assignments (employee_id, task_id) VALUES (?, ?)";
+            String sql = "INSERT INTO task_employee (emp_id, task_id, role) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, employeeId);
             stmt.setInt(2, taskId);
+            stmt.setString(3, role);
+
+
             int rows = stmt.executeUpdate();
-    
-            if (rows > 0) System.out.println("✅ Assignment inserted successfully.");
-            else System.out.println("⚠️ Insert failed.");
+            if (rows > 0) {
+                System.out.println("✅ Task assigned successfully.");
+            } else {
+                System.out.println("⚠️ Insert failed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -286,7 +344,7 @@ public class InsertHandler {
         );
         if (!isValidTask) return;
     
-        LocalDate created_at = InputHelper.getValidatedDate(sc, "date (yyyy-mm-dd): ");
+        LocalDateTime created_at = LocalDateTime.now();
         if (created_at == null) return;
     
         String body = InputHelper.getNonEmptyString(sc , "body: ");
@@ -298,11 +356,14 @@ public class InsertHandler {
             stmt.setInt(1, taskId);
             stmt.setInt(2, employeeId);
             stmt.setString(3, body);
-            stmt.setDate(4, java.sql.Date.valueOf(created_at));
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(created_at));
     
             int rows = stmt.executeUpdate();
-            if (rows > 0) System.out.println("✅ Comment inserted successfully.");
-            else System.out.println("⚠️ Insert failed.");
+            if (rows > 0) {
+                System.out.println("✅ Comment inserted successfully.");
+            } else {
+                System.out.println("⚠️ Insert failed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -314,7 +375,9 @@ public class InsertHandler {
         System.out.println("operation: ADDING");
         System.out.println("--- Insert Task Dependency ---");
     
-        int taskId = InputHelper.getValidatedInt(sc, "task_id: ");
+        int taskId = InputHelper.getValidatedInt(sc, "Parent_task_id: ");
+        if (taskId == -1) return;
+
         boolean isValidTask = FkValidator.validateWithNavigation(
             sc,
             "Task",
@@ -324,7 +387,9 @@ public class InsertHandler {
         );
         if (!isValidTask) return;
     
-        int dependentTaskId = InputHelper.getValidatedInt(sc, "dependent_task_id (d_task_id): ");
+        int dependentTaskId = InputHelper.getValidatedInt(sc, "dependent_task_id: ");
+        if (dependentTaskId == -1) return;
+
         boolean isValidDependent = FkValidator.validateWithNavigation(
             sc,
             "Dependent Task",
@@ -338,23 +403,32 @@ public class InsertHandler {
             System.out.println("❌ A task cannot depend on itself.");
             return;
         }
+
+
+        Map<Integer, List<Integer>> graph = FkValidator.buildGraphFromDB();
+
+        if (FkValidator.createsCycle(graph, taskId, dependentTaskId)) {
+            System.out.println("❌ Cannot add dependency. Circular dependency detected.");
+            return;
+        }
+    
+
     
         try (Connection conn = DBconnector.getConnection()) {
             String sql = "INSERT INTO task_dependency (task_id, d_task_id) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, taskId);
             stmt.setInt(2, dependentTaskId);
+
+
             int rows = stmt.executeUpdate();
-    
-            if (rows > 0)
+            if (rows > 0){
                 System.out.println("✅ Task dependency inserted successfully.");
-            else
+            } else {
                 System.out.println("⚠️ Insert failed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-    
-    
 }
