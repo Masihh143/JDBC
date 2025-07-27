@@ -22,6 +22,7 @@ public class Main {
             System.out.println("2. Update");
             System.out.println("3. Delete");
             System.out.println("4. Display");
+            System.out.println("5. Frequent query");
             System.out.println("0. Exit");
             String choice = sc.nextLine().trim();
             System.out.println("-------------------------------------------------------------------------------");
@@ -47,6 +48,10 @@ public class Main {
                 case "4":
                     System.out.println("operation: DISPLAYING");
                     // DisplayHandler.handle(sc);
+                    break;
+                case "5":
+                    System.out.println("operation: FREQUENT QUERY");
+                    FQ.handle(sc);
                     break;
                 default:
                     System.out.println("❌ Invalid option. Please select between 1-5.");

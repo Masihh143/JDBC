@@ -174,6 +174,7 @@ public class InsertHandler {
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
+                flag = true;
                 System.out.println("✅ Project inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
@@ -251,6 +252,7 @@ public class InsertHandler {
             
             int rows = stmt.executeUpdate();
             if (rows > 0) {
+                flag = true;
                 System.out.println("✅ Task inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
@@ -304,6 +306,7 @@ public class InsertHandler {
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
+                flag = true;
                 System.out.println("✅ Task assigned successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
@@ -360,6 +363,7 @@ public class InsertHandler {
     
             int rows = stmt.executeUpdate();
             if (rows > 0) {
+                flag = true;
                 System.out.println("✅ Comment inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");
@@ -423,6 +427,7 @@ public class InsertHandler {
 
             int rows = stmt.executeUpdate();
             if (rows > 0){
+                flag = true;
                 System.out.println("✅ Task dependency inserted successfully.");
             } else {
                 System.out.println("⚠️ Insert failed.");

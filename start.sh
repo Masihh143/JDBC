@@ -11,6 +11,7 @@ javac -cp .:$JAR_PATH $SRC_FILE
 javac -cp .:$JAR_PATH FkValidator.java 
 javac -cp .:$JAR_PATH InputHelper.java 
 javac -cp .:$JAR_PATH InsertHandler.java 
+javac -cp .:$JAR_PATH FQ.java
 echo ""
 
 # Check if compilation was successful
